@@ -37,20 +37,20 @@ services:
     # TODO 1: build image từ thư mục gốc của repository (chứa Dockerfile, build.gradle, src/),
     #         truyền build-arg APP_VERSION (giá trị lấy từ biến APP_VERSION, mặc định "local")
     build:
-      context: ______
+      context: .
       args:
-        APP_VERSION: ______
+        APP_VERSION: ${APP_VERSION:-local}
     # TODO 2: tên image = <APP_IMAGE>:<APP_TAG>
     #         (mặc định APP_IMAGE=devops-final-app, APP_TAG=latest)
-    image: ______
+    image: ${APP_IMAGE:-devops-final-app}:${APP_TAG:-latest}
     restart: unless-stopped
     environment:
       DB_HOST: mysql
       DB_PORT: "3306"
       # TODO 3: lấy tên database, tài khoản, mật khẩu MySQL từ student.env (không ghi cứng)
-      DB_NAME: ______
-      DB_USER: ______
-      DB_PASSWORD: ______
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Ho_Chi_Minh
     # Chỉ khởi động app khi service mysql đã ở trạng thái healthy (CÓ SẴN)
     depends_on:
@@ -66,10 +66,10 @@ services:
     restart: unless-stopped
     # TODO 4: publish cổng cá nhân APP_PORT (trong student.env) ra cổng 80 của container
     ports:
-      - "______:80"
+      - "${APP_PORT}:80"
     # TODO 5: mount (read-only)  nginx/default.conf -> /etc/nginx/conf.d/default.conf
     volumes:
-      - ______
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - app
     networks:
